@@ -1,0 +1,32 @@
+FROM openjdk:latest
+MAINTAINER Piotr Joński <yoyo@wp.eu>
+
+ARG YOUTRACK_VERSION
+
+RUN mkdir /youtrack /youtrack/backups /youtrack/data /youtrack/logs/ /youtrack/temp/
+
+WORKDIR /youtrack
+
+RUN groupadd --gid 2000 youtrack && \
+    useradd --system -d /youtrack --uid 2000 --gid youtrack youtrack && \
+    chown -R youtrack:youtrack /youtrack && \
+    curl -L "https://download.jetbrains.com/charisma/youtrack-${YOUTRACK_VERSION}.zip" > youtrack.zip && \
+    unzip youtrack.zip && \
+    rm -f youtrack.zip && \
+    mv youtrack-${YOUTRACK_VERSION}/* . && \
+    rm -rf internal/java/linux-x64/man && \
+    rm -rf internal/java/mac-x64 && \
+    rm -rf internal/java/windows-amd64 && \
+    chown -R youtrack:youtrack /youtrack && \
+    chmod -R u+rwxX /youtrack
+
+USER youtrack
+
+VOLUME ["/youtrack"]
+
+ENV HOME=/youtrack
+
+EXPOSE 8080
+
+CMD [ "/bin/bash", "/youtrack/bin/youtrack.sh", "run", "--no-browser" ]
+

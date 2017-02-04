@@ -1,0 +1,19 @@
+version: '2'
+services:
+  youtrack:
+    container_name: youtrack
+    image: pojo-youtrack:latest
+    build:
+      context: .
+      dockerfile: Dockerfile-youtrack
+      args:
+        - "YOUTRACK_VERSION=2017.1.30791"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./youtrack/backups:/youtrack/backups:rw
+      - ./youtrack/data:/youtrack/data:rw
+      - ./youtrack/logs:/youtrack/logs:rw
+      - ./youtrack/temp:/youtrack/temp:rw
+    restart: always
+
