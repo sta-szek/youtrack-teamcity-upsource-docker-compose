@@ -1,0 +1,17 @@
+FROM jetbrains/teamcity-server:latest
+MAINTAINER Piotr Joński <yoyo@wp.eu>
+
+RUN mkdir /teamcity
+
+WORKDIR /teamcity
+
+RUN groupadd --gid 3000 teamcity && \
+    useradd --system -d /teamcity --uid 3000 --gid teamcity teamcity && \
+    chown -Rv teamcity:teamcity /teamcity && \
+    chown -Rv teamcity:teamcity /opt/teamcity
+
+USER teamcity
+
+ENV HOME=/teamcity
+
+EXPOSE 8111

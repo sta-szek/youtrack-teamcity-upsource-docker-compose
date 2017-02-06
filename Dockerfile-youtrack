@@ -26,7 +26,7 @@ VOLUME ["/youtrack"]
 
 ENV HOME=/youtrack
 
-EXPOSE 8080
+EXPOSE 8111
 
 CMD [ "/bin/bash", "/youtrack/bin/youtrack.sh", "run", "--no-browser" ]
 

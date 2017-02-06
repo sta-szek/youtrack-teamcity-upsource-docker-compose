@@ -1,1 +1,4 @@
 youtrack/
+teamcity/
+*.iml
+.idea

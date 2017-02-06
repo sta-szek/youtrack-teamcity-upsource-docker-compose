@@ -16,4 +16,32 @@ services:
       - ./youtrack/logs:/youtrack/logs:rw
       - ./youtrack/temp:/youtrack/temp:rw
     restart: always
+    depends_on:
+      - teamcity
+    links:
+      - teamcity
+
+  teamcity:
+    container_name: teamcity
+    image: pojo-teamcity:latest
+    build:
+      context: .
+      dockerfile: Dockerfile-teamcity
+    ports:
+      - "8081:8111"
+    volumes:
+      - ./teamcity/data:/data/teamcity_server/datadir:rw
+      - ./teamcity/logs:/opt/teamcity/logs:rw
+    restart: always
+    depends_on:
+      - postgres
+    links:
+      - postgres
+
+  postgres:
+      container_name: postgres
+      image: postgres:latest
+      ports:
+        - "5432:5432"
+      restart: always
 
