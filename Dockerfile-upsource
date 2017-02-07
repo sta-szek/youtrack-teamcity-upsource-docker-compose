@@ -1,0 +1,34 @@
+FROM openjdk:latest
+MAINTAINER Piotr Joński <yoyo@wp.eu>
+
+ARG UPSOURCE_VERSION
+
+RUN mkdir /upsource /upsource/backups /upsource/data /upsource/logs/ /upsource/conf/ /upsource/temp/
+
+WORKDIR /upsource
+
+RUN echo "* - memlock unlimited \n* - nofile 100000 \n* - nproc 32768 \n* - as unlimited" >> /etc/security/limits.conf
+
+RUN groupadd --gid 2002 upsource && \
+    useradd --system -d /upsource --uid 2002 --gid upsource upsource && \
+    chown -R upsource:upsource /upsource && \
+    curl -L "http://download.jetbrains.com/upsource/upsource-${UPSOURCE_VERSION}.zip" > upsource.zip && \
+    unzip upsource.zip && \
+    rm -f upsource.zip && \
+    mv upsource-${UPSOURCE_VERSION}/* . && \
+    rm -rf internal/java/linux-x64/man && \
+    rm -rf internal/java/mac-x64 && \
+    rm -rf internal/java/windows-amd64 && \
+    chown -R upsource:upsource /upsource && \
+    chmod -R u+rwxX /upsource
+
+USER upsource
+
+VOLUME ["/upsource", "/upsource/backups", "/upsource/data", "/upsource/logs/", "/upsource/conf/", "/upsource/temp/"]
+
+ENV HOME=/upsource
+
+EXPOSE 8111
+
+CMD [ "/bin/bash", "/upsource/bin/upsource.sh", "run" ]
+

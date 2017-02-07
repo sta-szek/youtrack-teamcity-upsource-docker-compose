@@ -14,6 +14,7 @@ services:
       - ./youtrack/backups:/youtrack/backups:rw
       - ./youtrack/data:/youtrack/data:rw
       - ./youtrack/logs:/youtrack/logs:rw
+      - ./youtrack/conf:/youtrack/conf:rw
       - ./youtrack/temp:/youtrack/temp:rw
     restart: always
     links:
@@ -44,6 +45,7 @@ services:
     restart: always
 
   teamcity-agent:
+    container_name: teamcity-agent
     image: jetbrains/teamcity-agent:latest
     environment:
       - "AGENT_NAME=teamcity-agent"
@@ -52,4 +54,25 @@ services:
       - "./teamcity/agents/teamcity-agent:/data/teamcity_agent/conf:rw"
     restart: always
     links:
+      - teamcity
+
+  upsource:
+    container_name: upsource
+    image: pojo-upsource:latest
+    build:
+      context: .
+      dockerfile: Dockerfile-upsource
+      args:
+        - UPSOURCE_VERSION=3.0.4423
+    ports:
+      - 8082:8080
+    volumes:
+      - ./upsource/backups:/upsource/backups:rw
+      - ./upsource/data:/upsource/data:rw
+      - ./upsource/logs:/upsource/logs:rw
+      - ./upsource/conf:/upsource/conf:rw
+      - ./upsource/temp:/upsource/temp:rw
+    restart: always
+    links:
+      - youtrack
       - teamcity

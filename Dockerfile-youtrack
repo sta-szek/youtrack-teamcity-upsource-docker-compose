@@ -3,7 +3,7 @@ MAINTAINER Piotr Joński <yoyo@wp.eu>
 
 ARG YOUTRACK_VERSION
 
-RUN mkdir /youtrack /youtrack/backups /youtrack/data /youtrack/logs/ /youtrack/temp/
+RUN mkdir /youtrack /youtrack/backups /youtrack/data /youtrack/logs/ /youtrack/conf/ /youtrack/temp/
 
 WORKDIR /youtrack
 
@@ -22,7 +22,7 @@ RUN groupadd --gid 2000 youtrack && \
 
 USER youtrack
 
-VOLUME ["/youtrack"]
+VOLUME ["/youtrack", "/youtrack/backups", "/youtrack/data", "/youtrack/logs/", "/youtrack/conf/", "/youtrack/temp/"]
 
 ENV HOME=/youtrack
 

@@ -5,8 +5,8 @@ RUN mkdir /teamcity
 
 WORKDIR /teamcity
 
-RUN groupadd --gid 3000 teamcity && \
-    useradd --system -d /teamcity --uid 3000 --gid teamcity teamcity && \
+RUN groupadd --gid 2001 teamcity && \
+    useradd --system -d /teamcity --uid 2001 --gid teamcity teamcity && \
     chown -Rv teamcity:teamcity /teamcity && \
     chown -Rv teamcity:teamcity /opt/teamcity
 
