@@ -7,17 +7,15 @@ services:
       context: .
       dockerfile: Dockerfile-youtrack
       args:
-        - "YOUTRACK_VERSION=2017.1.30791"
+        - YOUTRACK_VERSION=2017.1.30791
     ports:
-      - "8080:8080"
+      - 8080:8080
     volumes:
       - ./youtrack/backups:/youtrack/backups:rw
       - ./youtrack/data:/youtrack/data:rw
       - ./youtrack/logs:/youtrack/logs:rw
       - ./youtrack/temp:/youtrack/temp:rw
     restart: always
-    depends_on:
-      - teamcity
     links:
       - teamcity
 
@@ -28,7 +26,7 @@ services:
       context: .
       dockerfile: Dockerfile-teamcity
     ports:
-      - "8081:8111"
+      - 8081:8111
     volumes:
       - ./teamcity/data:/data/teamcity_server/datadir:rw
       - ./teamcity/logs:/opt/teamcity/logs:rw
@@ -39,9 +37,19 @@ services:
       - postgres
 
   postgres:
-      container_name: postgres
-      image: postgres:latest
-      ports:
-        - "5432:5432"
-      restart: always
+    container_name: postgres
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    restart: always
 
+  teamcity-agent:
+    image: jetbrains/teamcity-agent:latest
+    environment:
+      - "AGENT_NAME=teamcity-agent"
+      - "SERVER_URL=teamcity:8111"
+    volumes:
+      - "./teamcity/agents/teamcity-agent:/data/teamcity_agent/conf:rw"
+    restart: always
+    links:
+      - teamcity
