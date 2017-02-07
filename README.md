@@ -7,3 +7,4 @@ TODO:
   - switch user to teamcity -- currently is root
   - download teamcity on your own
 * scale teamcity agents with different volumes
+* create upsource service
