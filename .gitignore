@@ -1,5 +1,6 @@
 youtrack/
 teamcity/
 upsource/
+hub/
 *.iml
 .idea

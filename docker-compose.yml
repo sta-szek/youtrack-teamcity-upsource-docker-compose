@@ -1,13 +1,28 @@
 version: '2'
 services:
+
+  hub:
+    container_name: hub
+    image: pojo-hub:latest
+    build:
+      context: .
+      dockerfile: Dockerfile-hub
+    ports:
+      - 8083:8080
+    volumes:
+      - ./hub/backups:/hub/backups:rw
+      - ./hub/data:/hub/data:rw
+      - ./hub/logs:/hub/logs:rw
+      - ./hub/conf:/hub/conf:rw
+      - ./hub/temp:/hub/temp:rw
+    restart: always
+
   youtrack:
     container_name: youtrack
     image: pojo-youtrack:latest
     build:
       context: .
       dockerfile: Dockerfile-youtrack
-      args:
-        - YOUTRACK_VERSION=2017.1.30791
     ports:
       - 8080:8080
     volumes:
@@ -19,6 +34,27 @@ services:
     restart: always
     links:
       - teamcity
+      - hub
+
+  upsource:
+    container_name: upsource
+    image: pojo-upsource:latest
+    build:
+      context: .
+      dockerfile: Dockerfile-upsource
+    ports:
+      - 8082:8080
+    volumes:
+      - ./upsource/backups:/upsource/backups:rw
+      - ./upsource/data:/upsource/data:rw
+      - ./upsource/logs:/upsource/logs:rw
+      - ./upsource/conf:/upsource/conf:rw
+      - ./upsource/temp:/upsource/temp:rw
+    restart: always
+    links:
+      - youtrack
+      - teamcity
+      - hub
 
   teamcity:
     container_name: teamcity
@@ -32,10 +68,9 @@ services:
       - ./teamcity/data:/data/teamcity_server/datadir:rw
       - ./teamcity/logs:/opt/teamcity/logs:rw
     restart: always
-    depends_on:
-      - postgres
     links:
       - postgres
+      - hub
 
   postgres:
     container_name: postgres
@@ -54,25 +89,4 @@ services:
       - "./teamcity/agents/teamcity-agent:/data/teamcity_agent/conf:rw"
     restart: always
     links:
-      - teamcity
-
-  upsource:
-    container_name: upsource
-    image: pojo-upsource:latest
-    build:
-      context: .
-      dockerfile: Dockerfile-upsource
-      args:
-        - UPSOURCE_VERSION=3.0.4423
-    ports:
-      - 8082:8080
-    volumes:
-      - ./upsource/backups:/upsource/backups:rw
-      - ./upsource/data:/upsource/data:rw
-      - ./upsource/logs:/upsource/logs:rw
-      - ./upsource/conf:/upsource/conf:rw
-      - ./upsource/temp:/upsource/temp:rw
-    restart: always
-    links:
-      - youtrack
       - teamcity

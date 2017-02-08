@@ -1,32 +1,37 @@
 FROM openjdk:latest
 MAINTAINER Piotr Joński <yoyo@wp.eu>
 
-ARG YOUTRACK_VERSION
-
-RUN mkdir /youtrack /youtrack/backups /youtrack/data /youtrack/logs/ /youtrack/conf/ /youtrack/temp/
-
-WORKDIR /youtrack
+ARG YOUTRACK_VERSION=2017.1.30867
+ENV PORT=8080
 
 RUN groupadd --gid 2000 youtrack && \
-    useradd --system -d /youtrack --uid 2000 --gid youtrack youtrack && \
-    chown -R youtrack:youtrack /youtrack && \
-    curl -L "https://download.jetbrains.com/charisma/youtrack-${YOUTRACK_VERSION}.zip" > youtrack.zip && \
-    unzip youtrack.zip && \
+    useradd -d /youtrack --uid 2000 --gid youtrack youtrack && \
+    mkdir /youtrack && \
+    chown -c youtrack:youtrack /youtrack
+
+USER youtrack
+ENV HOME=/youtrack
+WORKDIR /youtrack
+RUN mkdir /youtrack/backups /youtrack/data /youtrack/logs /youtrack/conf /youtrack/temp
+
+RUN curl -L "https://download.jetbrains.com/charisma/youtrack-${YOUTRACK_VERSION}.zip" > youtrack.zip && \
+    unzip -q youtrack.zip && \
     rm -f youtrack.zip && \
     mv youtrack-${YOUTRACK_VERSION}/* . && \
+    rm -rf youtrack-${YOUTRACK_VERSION} && \
     rm -rf internal/java/linux-x64/man && \
     rm -rf internal/java/mac-x64 && \
     rm -rf internal/java/windows-amd64 && \
-    chown -R youtrack:youtrack /youtrack && \
-    chmod -R u+rwxX /youtrack
+    chown -R youtrack:youtrack /youtrack
 
-USER youtrack
+RUN bin/youtrack.sh configure \
+    --backups-dir ${HOME}/backups \
+    --data-dir    ${HOME}/data \
+    --logs-dir    ${HOME}/log \
+    --temp-dir    ${HOME}/tmp \
+    --listen-port ${PORT} \
+    --base-url    http://localhost/
 
-VOLUME ["/youtrack", "/youtrack/backups", "/youtrack/data", "/youtrack/logs/", "/youtrack/conf/", "/youtrack/temp/"]
-
-ENV HOME=/youtrack
-
-EXPOSE 8111
-
+VOLUME ["/youtrack", "/youtrack/backups", "/youtrack/data", "/youtrack/logs", "/youtrack/conf", "/youtrack/temp"]
+EXPOSE ${PORT}
 CMD [ "/bin/bash", "/youtrack/bin/youtrack.sh", "run", "--no-browser" ]
-

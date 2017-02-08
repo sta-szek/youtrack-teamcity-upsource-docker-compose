@@ -1,21 +1,21 @@
 FROM openjdk:latest
 MAINTAINER Piotr Joński <yoyo@wp.eu>
 
-ARG UPSOURCE_VERSION
+ARG UPSOURCE_VERSION=3.0.4423
+ENV PORT=8080
 
-RUN mkdir /upsource /upsource/backups /upsource/data /upsource/logs/ /upsource/conf/ /upsource/temp/
-
+RUN mkdir /upsource /upsource/backups /upsource/data /upsource/logs /upsource/conf /upsource/temp
 WORKDIR /upsource
 
 RUN echo "* - memlock unlimited \n* - nofile 100000 \n* - nproc 32768 \n* - as unlimited" >> /etc/security/limits.conf
 
 RUN groupadd --gid 2002 upsource && \
     useradd --system -d /upsource --uid 2002 --gid upsource upsource && \
-    chown -R upsource:upsource /upsource && \
     curl -L "http://download.jetbrains.com/upsource/upsource-${UPSOURCE_VERSION}.zip" > upsource.zip && \
-    unzip upsource.zip && \
+    unzip -q upsource.zip && \
     rm -f upsource.zip && \
     mv upsource-${UPSOURCE_VERSION}/* . && \
+    rm -rf upsource-${UPSOURCE_VERSION} && \
     rm -rf internal/java/linux-x64/man && \
     rm -rf internal/java/mac-x64 && \
     rm -rf internal/java/windows-amd64 && \
@@ -23,12 +23,16 @@ RUN groupadd --gid 2002 upsource && \
     chmod -R u+rwxX /upsource
 
 USER upsource
-
-VOLUME ["/upsource", "/upsource/backups", "/upsource/data", "/upsource/logs/", "/upsource/conf/", "/upsource/temp/"]
-
 ENV HOME=/upsource
 
-EXPOSE 8111
+RUN bin/upsource.sh configure \
+    --backups-dir ${HOME}/backups \
+    --data-dir    ${HOME}/data \
+    --logs-dir    ${HOME}/log \
+    --temp-dir    ${HOME}/tmp \
+    --listen-port ${PORT} \
+    --base-url    http://localhost/
 
+VOLUME ["/upsource", "/upsource/backups", "/upsource/data", "/upsource/logs", "/upsource/conf", "/upsource/temp"]
+EXPOSE ${PORT}
 CMD [ "/bin/bash", "/upsource/bin/upsource.sh", "run" ]
-
