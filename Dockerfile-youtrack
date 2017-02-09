@@ -1,28 +1,27 @@
 FROM openjdk:latest
 MAINTAINER Piotr Joński <yoyo@wp.eu>
 
-ARG YOUTRACK_VERSION=2017.1.30867
+ARG YOUTRACK_VERSION=2017.1.30867 && \
+    USER_ID=2000 && \
+    USER_NAME=jetbrains
 ENV PORT=8080
 
-RUN groupadd --gid 2000 youtrack && \
-    useradd -d /youtrack --uid 2000 --gid youtrack youtrack && \
-    mkdir /youtrack && \
-    chown -c youtrack:youtrack /youtrack
+RUN groupadd --gid ${USER_ID} ${USER_NAME} && \
+    useradd --create-home --home-dir /youtrack --uid ${USER_ID} --gid ${USER_NAME} ${USER_NAME} && \
+    chown --changes ${USER_NAME}:${USER_NAME} /youtrack
 
-USER youtrack
-ENV HOME=/youtrack
+USER ${USER_NAME}
 WORKDIR /youtrack
-RUN mkdir /youtrack/backups /youtrack/data /youtrack/logs /youtrack/conf /youtrack/temp
 
-RUN curl -L "https://download.jetbrains.com/charisma/youtrack-${YOUTRACK_VERSION}.zip" > youtrack.zip && \
+RUN mkdir backups data logs conf temp && \
+    curl --location "https://download.jetbrains.com/charisma/youtrack-${YOUTRACK_VERSION}.zip" > youtrack.zip && \
     unzip -q youtrack.zip && \
     rm -f youtrack.zip && \
     mv youtrack-${YOUTRACK_VERSION}/* . && \
     rm -rf youtrack-${YOUTRACK_VERSION} && \
     rm -rf internal/java/linux-x64/man && \
     rm -rf internal/java/mac-x64 && \
-    rm -rf internal/java/windows-amd64 && \
-    chown -R youtrack:youtrack /youtrack
+    rm -rf internal/java/windows-amd64
 
 RUN bin/youtrack.sh configure \
     --backups-dir ${HOME}/backups \
@@ -32,6 +31,5 @@ RUN bin/youtrack.sh configure \
     --listen-port ${PORT} \
     --base-url    http://localhost/
 
-VOLUME ["/youtrack", "/youtrack/backups", "/youtrack/data", "/youtrack/logs", "/youtrack/conf", "/youtrack/temp"]
 EXPOSE ${PORT}
 CMD [ "/bin/bash", "/youtrack/bin/youtrack.sh", "run", "--no-browser" ]

@@ -1,14 +1,19 @@
 FROM openjdk:latest
 MAINTAINER Piotr Joński <yoyo@wp.eu>
 
-ARG HUB_VERSION=2017.1.4205
+ARG HUB_VERSION=2017.1.4205 && \
+    USER_ID=2000 && \
+    USER_NAME=jetbrains
 ENV PORT=8080
 
-RUN mkdir /hub /hub/backups /hub/data /hub/logs /hub/conf /hub/temp
+RUN groupadd --gid ${USER_ID} ${USER_NAME} && \
+    useradd --create-home --home-dir /hub --uid ${USER_ID} --gid ${USER_NAME} ${USER_NAME} && \
+    chown --changes ${USER_NAME}:${USER_NAME} /hub
+
+USER hub
 WORKDIR /hub
 
-RUN groupadd --gid 2003 hub && \
-    useradd --system -d /hub --uid 2003 --gid hub hub && \
+RUN mkdir backups data logs conf temp && \
     curl -L "https://download.jetbrains.com/hub/2017.1/hub-ring-bundle-${HUB_VERSION}.zip" > hub.zip && \
     unzip -q hub.zip && \
     rm -f hub.zip && \
@@ -16,12 +21,7 @@ RUN groupadd --gid 2003 hub && \
     rm -rf hub-ring-bundle-${HUB_VERSION} && \
     rm -rf internal/java/linux-x64/man && \
     rm -rf internal/java/mac-x64 && \
-    rm -rf internal/java/windows-amd64 && \
-    chown -R hub:hub /hub && \
-    chmod -R u+rwxX /hub
-
-USER hub
-ENV HOME=/hub
+    rm -rf internal/java/windows-amd64
 
 RUN bin/hub.sh configure \
     --backups-dir ${HOME}/backups \
@@ -31,6 +31,5 @@ RUN bin/hub.sh configure \
     --listen-port ${PORT} \
     --base-url    http://localhost/
 
-VOLUME ["/hub", "/hub/backups", "/hub/data", "/hub/logs", "/hub/conf", "/hub/temp"]
 EXPOSE ${PORT}
 CMD [ "/bin/bash", "/hub/bin/hub.sh", "run" ]
