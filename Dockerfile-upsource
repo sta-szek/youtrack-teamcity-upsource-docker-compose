@@ -1,9 +1,9 @@
 FROM openjdk:latest
 MAINTAINER Piotr Joński <yoyo@wp.eu>
 
-ARG UPSOURCE_VERSION=3.0.4423 && \
-    USER_ID=2000 && \
-    USER_NAME=jetbrains
+ARG UPSOURCE_VERSION=3.0.4423
+ARG USER_ID=2000
+ARG USER_NAME=jetbrains
 ENV PORT=8080
 
 RUN echo "* - memlock unlimited \n* - nofile 100000 \n* - nproc 32768 \n* - as unlimited" >> /etc/security/limits.conf
@@ -12,11 +12,11 @@ RUN groupadd --gid ${USER_ID} ${USER_NAME} && \
     useradd --create-home --home-dir /upsource --uid ${USER_ID} --gid ${USER_NAME} ${USER_NAME} && \
     chown --changes ${USER_NAME}:${USER_NAME} /upsource
 
-USER upsource
+USER ${USER_NAME}
 WORKDIR /upsource
 
 RUN mkdir backups data logs conf temp && \
-    curl -L "http://download.jetbrains.com/upsource/upsource-${UPSOURCE_VERSION}.zip" > upsource.zip && \
+    curl --location "http://download.jetbrains.com/upsource/upsource-${UPSOURCE_VERSION}.zip" > upsource.zip && \
     unzip -q upsource.zip && \
     rm -f upsource.zip && \
     mv upsource-${UPSOURCE_VERSION}/* . && \

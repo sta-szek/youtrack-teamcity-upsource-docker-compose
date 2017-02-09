@@ -72,21 +72,17 @@ services:
       - postgres
       - hub
 
+  teamcity-agent:
+    image: jetbrains/teamcity-agent:latest
+    environment:
+      - "SERVER_URL=teamcity:8111"
+    restart: always
+    links:
+      - teamcity
+
   postgres:
     container_name: postgres
     image: postgres:latest
     ports:
       - 5432:5432
     restart: always
-
-  teamcity-agent:
-    container_name: teamcity-agent
-    image: jetbrains/teamcity-agent:latest
-    environment:
-      - "AGENT_NAME=teamcity-agent"
-      - "SERVER_URL=teamcity:8111"
-    volumes:
-      - "./teamcity/agents/teamcity-agent:/data/teamcity_agent/conf:rw"
-    restart: always
-    links:
-      - teamcity

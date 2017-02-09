@@ -1,20 +1,20 @@
 FROM openjdk:latest
 MAINTAINER Piotr Joński <yoyo@wp.eu>
 
-ARG HUB_VERSION=2017.1.4205 && \
-    USER_ID=2000 && \
-    USER_NAME=jetbrains
+ARG HUB_VERSION=2017.1.4205
+ARG USER_ID=2000
+ARG USER_NAME=jetbrains
 ENV PORT=8080
 
 RUN groupadd --gid ${USER_ID} ${USER_NAME} && \
     useradd --create-home --home-dir /hub --uid ${USER_ID} --gid ${USER_NAME} ${USER_NAME} && \
     chown --changes ${USER_NAME}:${USER_NAME} /hub
 
-USER hub
+USER ${USER_NAME}
 WORKDIR /hub
 
 RUN mkdir backups data logs conf temp && \
-    curl -L "https://download.jetbrains.com/hub/2017.1/hub-ring-bundle-${HUB_VERSION}.zip" > hub.zip && \
+    curl --location "https://download.jetbrains.com/hub/2017.1/hub-ring-bundle-${HUB_VERSION}.zip" > hub.zip && \
     unzip -q hub.zip && \
     rm -f hub.zip && \
     mv hub-ring-bundle-${HUB_VERSION}/* . && \

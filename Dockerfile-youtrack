@@ -1,9 +1,9 @@
 FROM openjdk:latest
 MAINTAINER Piotr Joński <yoyo@wp.eu>
 
-ARG YOUTRACK_VERSION=2017.1.30867 && \
-    USER_ID=2000 && \
-    USER_NAME=jetbrains
+ARG YOUTRACK_VERSION=2017.1.30867
+ARG USER_ID=2000
+ARG USER_NAME=jetbrains
 ENV PORT=8080
 
 RUN groupadd --gid ${USER_ID} ${USER_NAME} && \
