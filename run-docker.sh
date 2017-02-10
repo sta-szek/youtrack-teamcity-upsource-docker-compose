@@ -19,8 +19,8 @@ for item in ${JETBRAINS_PRODUCTS[*]}
 do
     mkdir -v  ${item}/backups
     mkdir -v  ${item}/data
-    mkdir -v  ${item}/log
-    mkdir -v  ${item}/tmp
+    mkdir -v  ${item}/logs
+    mkdir -v  ${item}/temp
     mkdir -v  ${item}/conf
     chown --changes --recursive ${JETBRAINS_USER_NAME}:${GROUP_NAME} ${item}
     chmod --recursive 770 ${item}

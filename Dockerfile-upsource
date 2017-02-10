@@ -4,6 +4,7 @@ MAINTAINER Piotr Joński <yoyo@wp.eu>
 ARG UPSOURCE_VERSION=3.0.4423
 ARG USER_ID=2000
 ARG USER_NAME=jetbrains
+ARG BASE_URL=http://localhost/
 ENV PORT=8080
 
 RUN echo "* - memlock unlimited \n* - nofile 100000 \n* - nproc 32768 \n* - as unlimited" >> /etc/security/limits.conf
@@ -31,7 +32,7 @@ RUN bin/upsource.sh configure \
     --logs-dir    ${HOME}/log \
     --temp-dir    ${HOME}/tmp \
     --listen-port ${PORT} \
-    --base-url    http://localhost/
+    --base-url    ${BASE_URL}
 
 EXPOSE ${PORT}
 CMD [ "/bin/bash", "/upsource/bin/upsource.sh", "run" ]

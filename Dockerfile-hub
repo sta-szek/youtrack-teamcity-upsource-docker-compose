@@ -4,6 +4,7 @@ MAINTAINER Piotr Joński <yoyo@wp.eu>
 ARG HUB_VERSION=2017.1.4205
 ARG USER_ID=2000
 ARG USER_NAME=jetbrains
+ARG BASE_URL=http://localhost/
 ENV PORT=8080
 
 RUN groupadd --gid ${USER_ID} ${USER_NAME} && \
@@ -29,7 +30,7 @@ RUN bin/hub.sh configure \
     --logs-dir    ${HOME}/log \
     --temp-dir    ${HOME}/tmp \
     --listen-port ${PORT} \
-    --base-url    http://localhost/
+    --base-url    ${BASE_URL}
 
 EXPOSE ${PORT}
 CMD [ "/bin/bash", "/hub/bin/hub.sh", "run" ]
