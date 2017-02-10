@@ -10,7 +10,6 @@ JETBRAINS_PRODUCTS=(teamcity hub youtrack upsource)
 JETBRAINS_USER_NAME=jetbrains
 JETBRAINS_USER_ID=2000
 GROUP_NAME=$1
-echo ${GROUP_NAME}
 
 groupadd --gid ${JETBRAINS_USER_ID} ${JETBRAINS_USER_NAME}
 useradd --system --uid ${JETBRAINS_USER_ID} --gid ${JETBRAINS_USER_NAME} ${JETBRAINS_USER_NAME}

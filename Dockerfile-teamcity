@@ -18,6 +18,8 @@ RUN mkdir backups data logs conf temp && \
     tar -xf teamcity.tar.gz && \
     rm -f teamcity.tar.gz && \
     mv TeamCity/* . && \
+    mkdir -p /teamcity/data/lib/jdbc && \
+    curl --location "https://jdbc.postgresql.org/download/postgresql-9.4.1212.jar" > data/lib/jdbc/postgresql-9.4.1212.jar && \
     rm -rf TeamCity
 
 EXPOSE ${PORT}

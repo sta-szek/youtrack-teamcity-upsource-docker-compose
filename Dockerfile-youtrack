@@ -27,8 +27,8 @@ RUN mkdir backups data logs conf temp && \
 RUN bin/youtrack.sh configure \
     --backups-dir ${HOME}/backups \
     --data-dir    ${HOME}/data \
-    --logs-dir    ${HOME}/log \
-    --temp-dir    ${HOME}/tmp \
+    --logs-dir    ${HOME}/logs \
+    --temp-dir    ${HOME}/temp \
     --listen-port ${PORT} \
     --base-url    ${BASE_URL}
 

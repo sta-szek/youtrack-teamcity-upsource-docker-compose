@@ -65,8 +65,9 @@ services:
     ports:
       - 8081:8111
     volumes:
-      - ./teamcity/data:/data/teamcity_server/datadir:rw
-      - ./teamcity/logs:/opt/teamcity/logs:rw
+      - ./teamcity/plugins:/teamcity/plugins:rw
+      - ./teamcity/conf:/teamcity/conf:rw
+      - ./teamcity/logs:/teamcity/logs:rw
     restart: always
     links:
       - postgres
@@ -86,3 +87,19 @@ services:
     ports:
       - 5432:5432
     restart: always
+
+#  nginx:
+#    container_name: nginx
+#    image: nginx
+#    volumes:
+#      - ./nginx:/etc/nginx
+#    environment:
+#      - NGINX_PORT=80
+#    ports:
+#      - 80:80
+#    links:
+#      - hub
+#      - youtrack
+#      - upsource
+#      - teamcity
+#    restart: always
