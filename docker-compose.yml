@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 services:
 
   hub:
@@ -16,6 +16,9 @@ services:
       - ./hub/conf:/hub/conf:rw
       - ./hub/temp:/hub/temp:rw
     restart: always
+    cpu_shares: 75
+    mem_limit: 1g
+    memswap_limit: 2g
 
   youtrack:
     container_name: youtrack
@@ -35,6 +38,9 @@ services:
     links:
       - teamcity
       - hub
+    cpu_shares: 75
+    mem_limit: 1g
+    memswap_limit: 2g
 
   upsource:
     container_name: upsource
@@ -55,6 +61,9 @@ services:
       - youtrack
       - teamcity
       - hub
+    cpu_shares: 50
+    mem_limit: 4g
+    memswap_limit: 8g
 
   teamcity:
     container_name: teamcity
@@ -72,6 +81,9 @@ services:
     links:
       - postgres
       - hub
+    cpu_shares: 75
+    mem_limit: 1g
+    memswap_limit: 2g
 
   teamcity-agent:
     image: jetbrains/teamcity-agent:latest
@@ -80,6 +92,9 @@ services:
     restart: always
     links:
       - teamcity
+    cpu_shares: 75
+    mem_limit: 1g
+    memswap_limit: 2g
 
   postgres:
     container_name: postgres
@@ -87,6 +102,9 @@ services:
     ports:
       - 5432:5432
     restart: always
+    cpu_shares: 75
+    mem_limit: 512m
+    memswap_limit: 1g
 
 #  nginx:
 #    container_name: nginx
