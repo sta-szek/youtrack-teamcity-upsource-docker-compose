@@ -101,6 +101,8 @@ services:
     image: postgres:latest
     ports:
       - 5432:5432
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
     restart: always
     cpu_shares: 75
     mem_limit: 512m

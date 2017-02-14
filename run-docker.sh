@@ -25,4 +25,8 @@ do
     chmod --recursive 770 ${item}
 done
 
+mkdir -v  postgres
+chown --changes --recursive ${JETBRAINS_USER_NAME}:${GROUP_NAME} postgres
+chmod --recursive 770 postgres
+
 docker-compose up -d
