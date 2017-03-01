@@ -1,14 +1,20 @@
 #!/usr/bin/env bash
 
-if [ -z $1 ]; then
-    echo "pass service name to create as first argument. e.g. hub"
-    exit 0;
-fi
-
 SERVICE_NAME=$1
 JETBRAINS_USER_NAME=jetbrains
 DIRS_TO_CREATE=(backups data logs temp conf)
 JETBRAINS_USER_ID=2000
+PORT=8080
+
+if [ -z ${SERVICE_NAME} ]; then
+    echo "pass service name to create as first argument. e.g. hub"
+    exit 0;
+fi
+
+if [ ${SERVICE_NAME} = "teamcity" ]; then
+    echo "changing internal port to 8111 - only for teamcity"
+    PORT=8111
+fi
 
 # create user if not exist
 if [ $(getent passwd ${JETBRAINS_USER_NAME}) ]; then
@@ -38,8 +44,14 @@ docker build --tag ${SERVICE_NAME}:latest \
              --file ${SERVICE_NAME}/Dockerfile \
              .
 
+is_running=`docker top ${SERVICE_NAME} &>/dev/null`
+if [ !${is_running} ]; then
+    docker stop ${SERVICE_NAME}
+    sleep 5
+fi
+
 #run docker
-docker run -p80:8080 \
+docker run -p80:${PORT} \
            -v `pwd`/${SERVICE_NAME}/backups:/${SERVICE_NAME}/backups:rw \
            -v `pwd`/${SERVICE_NAME}/data:/${SERVICE_NAME}/data:rw \
            -v `pwd`/${SERVICE_NAME}/logs:/${SERVICE_NAME}/logs:rw \

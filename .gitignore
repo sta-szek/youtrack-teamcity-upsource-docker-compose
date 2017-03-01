@@ -7,3 +7,6 @@ hub/
 *.log
 
 !standalone-dockers/*
+standalone-dockers/teamcity/temp
+standalone-dockers/teamcity/data
+!standalone-dockers/teamcity/data/plugins
