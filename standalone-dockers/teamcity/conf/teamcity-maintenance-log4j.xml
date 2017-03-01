@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration>
+  
+  <appender name="CONSOLE_OUT" class="org.apache.log4j.ConsoleAppender">
+    <param name="target" value="System.out"/>
+    <param name="immediateFlush" value="true"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%m %n"/>
+    </layout>
+    <filter class="jetbrains.buildServer.util.SpringErrorsFilter">
+      <param name="LevelMin" value="INFO"/>
+      <param name="LevelMax" value="INFO"/>
+    </filter>
+  </appender>
+
+  <appender name="CONSOLE_ERR" class="org.apache.log4j.ConsoleAppender">
+    <param name="target" value="System.err"/>
+    <param name="immediateFlush" value="true"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%m %n"/>
+    </layout>
+    <filter class="jetbrains.buildServer.util.SpringErrorsFilter">
+      <param name="LevelMin" value="WARN"/>
+    </filter>
+  </appender>
+
+  <appender name="ROLL" class="org.apache.log4j.RollingFileAppender">
+    <param name="file" value="${teamcity_logs}teamcity-maintenance.log"/>
+    <param name="maxBackupIndex" value="7"/>
+    <!--REPLACE PREVIOUS LINE WITH UNCOMMENTED LINE TO STORE MORE LOGS-->
+    <!-- <param name="maxBackupIndex" value="20"/> -->
+
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="[%d] %6p - %m %n"/>
+    </layout>
+  </appender>
+
+  <appender name="TRUNCATION" class="org.apache.log4j.RollingFileAppender">
+    <param name="file" value="${teamcity_logs}teamcity-maintenance-truncation.log"/>
+    <param name="maxBackupIndex" value="7"/>
+    <!--REPLACE PREVIOUS LINE WITH UNCOMMENTED LINE TO STORE MORE LOGS-->
+    <!-- <param name="maxBackupIndex" value="20"/> -->
+
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="[%d] %6p - %m %n"/>
+    </layout>
+  </appender>
+
+  <category name="jetbrains.buildServer.MAINTENANCE" additivity="false">
+    <priority value="INFO"/>
+    <appender-ref ref="CONSOLE_OUT"/>
+    <appender-ref ref="CONSOLE_ERR"/>
+    <appender-ref ref="ROLL"/>
+  </category>
+
+  <category name="jetbrains.buildServer.DATA_TRUNCATION" additivity="false">
+    <priority value="INFO"/>
+    <appender-ref ref="TRUNCATION"/>
+  </category>
+
+  <root>
+    <priority value="WARN"/>
+    <appender-ref ref="CONSOLE_ERR"/>
+  </root>
+
+</log4j:configuration>

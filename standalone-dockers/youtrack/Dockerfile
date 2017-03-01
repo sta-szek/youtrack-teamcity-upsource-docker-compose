@@ -5,7 +5,7 @@ ARG YOUTRACK_VERSION=2017.1.31260
 ARG USER_ID=2000
 ARG USER_NAME=jetbrains
 ARG BASE_URL=http://localhost/
-ENV PORT=80
+ENV PORT=8080
 
 RUN groupadd --gid ${USER_ID} ${USER_NAME} && \
     useradd --create-home --home-dir /youtrack --uid ${USER_ID} --gid ${USER_NAME} ${USER_NAME} && \

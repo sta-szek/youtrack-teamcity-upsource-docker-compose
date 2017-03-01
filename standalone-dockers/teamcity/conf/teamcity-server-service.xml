@@ -1,0 +1,25 @@
+<jetservice>
+  <!-- this is TeamCity server service settings. DO NOT MODIFY. File hash is C9AE856F10CAFE0787C74A8E2B35A68C -->
+  <name>TeamCity</name>
+  <displayName>TeamCity Server</displayName>
+  <description>JetBrains TeamCity server service</description>
+  <execution>
+    <program>cmd.exe</program>
+    <arguments>/c teamcity-server.bat run service</arguments>
+    <workdir>../bin</workdir>
+    <termination timeout="15">
+      <execution>
+        <program>cmd.exe</program>
+        <arguments>/c teamcity-server.bat stop service</arguments>
+        <workdir>../bin</workdir>
+      </execution>
+    </termination>
+    <copySystemEnvironmentVariables>
+      <variable>TEAMCITY_DATA_PATH</variable>
+      <variable>TEAMCITY_SERVER_MEM_OPTS</variable>
+      <variable>TEAMCITY_SERVER_OPTS</variable>
+      <variable>TEAMCITY_PREPARE_SCRIPT</variable>
+    </copySystemEnvironmentVariables>
+  </execution>
+</jetservice>
+

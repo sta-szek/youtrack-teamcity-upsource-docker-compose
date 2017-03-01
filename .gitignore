@@ -4,5 +4,6 @@ upsource/
 hub/
 *.iml
 .idea
+*.log
 
 !standalone-dockers/*

@@ -10,10 +10,8 @@ JETBRAINS_USER_NAME=jetbrains
 DIRS_TO_CREATE=(backups data logs temp conf)
 JETBRAINS_USER_ID=2000
 
-getent passwd ${JETBRAINS_USER_NAME} > /dev/null 2&>1
-
 # create user if not exist
-if [ $? -eq 0 ]; then
+if [ $(getent passwd ${JETBRAINS_USER_NAME}) ]; then
     echo "user ${JETBRAINS_USER_NAME} already exists"
 else
     echo "creating user ${JETBRAINS_USER_NAME}"
