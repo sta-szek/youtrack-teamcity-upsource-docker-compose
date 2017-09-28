@@ -1,5 +1,5 @@
 FROM openjdk:latest
-MAINTAINER Piotr Joński <yoyo@wp.eu>
+MAINTAINER Piotr Joński <p.jonski@pojo.pl>
 
 ARG UPSOURCE_VERSION=3.0.4423
 ARG USER_ID=2000

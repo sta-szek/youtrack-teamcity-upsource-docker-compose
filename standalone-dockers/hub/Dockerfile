@@ -1,5 +1,5 @@
 FROM openjdk:latest
-MAINTAINER Piotr Joński <yoyo@wp.eu>
+MAINTAINER Piotr Joński <p.jonski@pojo.pl>
 
 ARG HUB_VERSION=2017.1.4205
 ARG USER_ID=2000
