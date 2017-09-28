@@ -1,7 +1,7 @@
 FROM openjdk:latest
 MAINTAINER Piotr Joński <p.jonski@pojo.pl>
 
-ARG TEAMCITY_VERSION=10.0.4
+ARG TEAMCITY_VERSION=2017.1.4
 ARG USER_ID=2000
 ARG USER_NAME=jetbrains
 ENV PORT=8111
